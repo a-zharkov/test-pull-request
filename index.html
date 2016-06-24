@@ -1,0 +1,49 @@
+<div class="timeline">
+    <div ng-if="timeline.items.length" class="vertical-line"></div>
+    <ul class="timeline-container"
+        infinite-scroll="timeline.reachedScrollBottom()"
+        infinite-scroll-container="'.tu-content'"
+        infinite-scroll-immediate-check="true"
+    >
+        <li ng-repeat="activity in timeline.items">
+            <div class="tu-card activity-card {{::activity.side}}">
+                <div class="activity-head-info">
+                    <tu-avatar class="avatar-left" model="::activity.author"></tu-avatar>
+                    <div class="activity-data">
+                        <div class="first-line">
+                            <span class="activity-title">{{::activity.description}}</span>
+                            <span class="customer pull-right">{{::activity.subjectInfo.subject.displayName}} {{::activity.subjectInfo.tenantAka}}</span>
+                        </div>
+                        <div class="second-line">
+                        <span class="activity-author">
+                            {{::activity.timestamp | tuTimeAgo}}
+                            {{::'by' | i18n}}
+                            {{::timeline.user.id == activity.author.id ? ('you' | i18n) : activity.author.displayName}}
+                        </span>
+                        <span class="route pull-right">
+                            {{::activity.subjectInfo.line2}}
+                        </span>
+                        </div>
+                    </div>
+                    <tu-avatar ng-if="activity.subjectInfo.subject" class="avatar-right" model="::activity.subjectInfo.subject"></tu-avatar>
+                </div>
+                <div class="activity-additional" ng-if="activity.subjectInfo.infobits.length">
+                    <ul class="infobits">
+                        <li ng-repeat="bit in activity.subjectInfo.infobits" ng-class="bit.cssClass">
+                            <span class="bit-label">{{::bit.label | i18n}}</span>
+                            <span class="bit-value" tu-compile="bit.value"></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <span class="icon tu-{{::activity.icon}}"
+                  ng-style="::{'background-color': activity.color}"
+            ></span>
+        </li>
+    </ul>
+</div>
+<div class="timeline-loader-container"
+     ng-if="timeline.inflight"
+     ng-class="{ 'centered': !timeline.items.length && timeline.isStandalone() }">
+    <tu-loader side="30"></tu-loader>
+</div>
